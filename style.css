@@ -1,0 +1,1070 @@
+/* =========================================================
+   SILEX TO SPACE : feuille de style
+   1. Variables        2. Base               3. Carte et titre
+   4. Compteurs        5. Onglets et clic    6. Boutique
+   7. Pop-up           8. Animations         9. Adaptation à l'écran
+   ========================================================= */
+
+/* ---------- 1. Variables ---------- */
+:root {
+  --nuit: #0b1026;
+  --nuit-claire: #1b2a5a;
+  --terre: #c58b4e;
+  --sable: #f3e3c3;
+  --feu: #ff9f43;
+  --bronze: #e0a36b;
+
+  --verre: rgba(20, 15, 35, 0.7);          /* fond des panneaux */
+  --bordure: rgba(243, 227, 195, 0.25);
+  --ombre: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+  --ecart: 24px;                           /* marge de la page et écart entre panneaux */
+  --largeur-carte: 460px;
+  --largeur-compteurs: 260px;
+  --largeur-boutique: 360px;
+  --hauteur-page: 100vh;
+  --taille-autel: 220px;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --hauteur-page: 100dvh;
+  }
+}
+
+/* ---------- 2. Base ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Un élément "hidden" n'est jamais affiché, même si une autre règle définit son display */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  min-height: var(--hauteur-page);
+  display: grid;
+  place-items: center;
+  padding: var(--ecart);
+  font-family: "Nunito", sans-serif;
+  color: var(--sable);
+  background: linear-gradient(to top, #8a5a2b 0%, #3b2a4f 40%, var(--nuit-claire) 70%, var(--nuit) 100%);
+  background-attachment: fixed;
+}
+
+/* Étoiles, visibles surtout en haut de la page */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 90px 80px, #fff, transparent),
+    radial-gradient(1px 1px at 160px 20px, #ffe9b0, transparent),
+    radial-gradient(1px 1px at 130px 100px, #fff, transparent);
+  background-size: 200px 120px;
+  opacity: 0.7;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 80%);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 80%);
+}
+
+/* ---------- 3. Carte et titre ---------- */
+.carte {
+  width: 100%;
+  max-width: var(--largeur-carte);
+  padding: 40px 32px 32px;
+  text-align: center;
+  background: rgba(20, 15, 35, 0.55);
+  border: 1px solid var(--bordure);
+  border-radius: 28px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.titre {
+  font-family: "Bungee", sans-serif;
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1.1;
+  background: linear-gradient(90deg, var(--terre), var(--sable) 45%, #8fd3ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.titre span {
+  font-size: 0.6em;
+}
+
+.sous-titre {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+.reset {
+  margin-top: 16px;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--sable);
+  background: none;
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.reset:hover {
+  opacity: 1;
+}
+
+/* ---------- 4. Compteurs ---------- */
+.scores {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 36px;
+  margin-top: 28px;
+}
+
+.score small {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.compteur {
+  display: block;
+  font-family: "Bungee", sans-serif;
+  font-size: clamp(2.2rem, 9vw, 3.4rem);
+  line-height: 1;
+  color: var(--feu);
+  text-shadow: 0 0 24px rgba(255, 159, 67, 0.5);
+}
+
+.compteur-bronze {
+  color: var(--bronze);
+  text-shadow: 0 0 24px rgba(224, 163, 107, 0.5);
+}
+
+.production {
+  display: block;
+  min-height: 1.2em;
+  margin-top: 6px;
+  color: var(--feu);
+}
+
+/* ---------- 5. Onglets et zone de clic ---------- */
+.onglets {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.onglet {
+  padding: 8px 18px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--sable);
+  background: rgba(243, 227, 195, 0.08);
+  border: 1px solid rgba(243, 227, 195, 0.2);
+  border-radius: 999px;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.onglet:hover {
+  opacity: 1;
+}
+
+.onglet.actif {
+  color: #1a1020;
+  background: var(--feu);
+  border-color: transparent;
+  opacity: 1;
+}
+
+.onglet[data-onglet="bronze"].actif {
+  background: var(--bronze);
+}
+
+/* L'onglet pulse tant qu'on ne l'a pas visité */
+.onglet.nouveau {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+/* Le socle rond sous l'image */
+.autel {
+  width: var(--taille-autel);
+  aspect-ratio: 1;
+  margin: 28px auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e9d3a8, #a8764a 70%, #6b4526);
+  box-shadow:
+    inset 0 -8px 20px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(255, 159, 67, 0.25);
+  animation: flotte 4s ease-in-out infinite;
+}
+
+.autel-bronze {
+  background: radial-gradient(circle at 35% 30%, #f0c48a, #b8733a 70%, #6b3a1a);
+  box-shadow:
+    inset 0 -8px 20px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(224, 163, 107, 0.3);
+}
+
+.cliquable {
+  width: 62%;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.4));
+  transition: transform 0.1s;
+}
+
+.cliquable:hover {
+  transform: scale(1.06) rotate(-3deg);
+}
+
+.cliquable:active {
+  transform: scale(0.92);
+}
+
+/* L'image du bronze est rognée en cercle */
+.autel-bronze .cliquable {
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.astuce {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+/* Le "+1" qui s'envole à chaque clic */
+.pop {
+  position: fixed;
+  pointer-events: none;
+  font-family: "Bungee", sans-serif;
+  font-size: 1.6rem;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  animation: monte 0.8s ease-out forwards;
+}
+
+/* ---------- 6. Boutique (évolutions et technologies) ---------- */
+#boutique {
+  margin-top: 24px;
+  padding-top: 20px;
+  text-align: left;
+  border-top: 1px solid rgba(243, 227, 195, 0.2);
+  animation: apparait 0.4s ease-out;
+}
+
+#boutique h2 {
+  margin-bottom: 12px;
+  font-family: "Bungee", sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+
+#titre-technologies {
+  margin-top: 20px;
+}
+
+#liste-evolutions,
+#liste-technologies {
+  max-height: 30vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+#boutique,
+#liste-evolutions,
+#liste-technologies {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
+}
+
+.evolution {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  background: rgba(243, 227, 195, 0.08);
+  border: 1px solid rgba(243, 227, 195, 0.18);
+  border-radius: 16px;
+}
+
+.evolution-infos small {
+  display: block;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.evolution-infos small:empty {
+  display: none;
+}
+
+.possedes {
+  margin-left: 6px;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+  background: rgba(255, 159, 67, 0.25);
+  border-radius: 999px;
+}
+
+.acheter {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 700;
+  color: #1a1020;
+  background: var(--feu);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.acheter:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.acheter:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------- 7. Pop-up de découverte ---------- */
+#decouverte {
+  margin: auto;
+  width: min(90vw, 420px);
+  padding: 32px 28px;
+  text-align: center;
+  color: var(--sable);
+  background: linear-gradient(160deg, #2a2140, #14102a);
+  border: 1px solid rgba(243, 227, 195, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+#decouverte::backdrop {
+  background: rgba(5, 8, 20, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+#decouverte[open] {
+  animation: apparait 0.25s ease-out;
+}
+
+#decouverte h2 {
+  margin: 8px 0 12px;
+  font-family: "Bungee", sans-serif;
+  font-size: 1.8rem;
+}
+
+#decouverte-image {
+  display: block;
+  max-width: 100%;
+  max-height: 160px;
+  margin: 14px auto 0;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+#decouverte-texte {
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.etiquette {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: var(--feu);
+}
+
+.bonus {
+  margin-top: 14px;
+  padding: 10px 12px;
+  font-weight: 700;
+  color: var(--feu);
+  background: rgba(255, 159, 67, 0.12);
+  border-radius: 12px;
+}
+
+.source {
+  margin-top: 14px;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+#decouverte-lien {
+  display: inline-block;
+  margin: 20px 0 12px;
+  padding: 12px 22px;
+  font-weight: 700;
+  color: #1a1020;
+  text-decoration: none;
+  background: var(--feu);
+  border-radius: 999px;
+  transition: transform 0.1s;
+}
+
+#decouverte-lien:hover {
+  transform: scale(1.05);
+}
+
+#decouverte-fermer {
+  display: block;
+  margin: 0 auto;
+  padding: 8px 16px;
+  font: inherit;
+  color: var(--sable);
+  background: none;
+  border: none;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+#decouverte-fermer:hover {
+  opacity: 1;
+}
+
+/* ---------- 8. Animations ---------- */
+@keyframes flotte {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes monte {
+  from { opacity: 1; transform: translate(-50%, -50%); }
+  to   { opacity: 0; transform: translate(-50%, -140px); }
+}
+
+@keyframes apparait {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 159, 67, 0.6); }
+  50%      { box-shadow: 0 0 0 8px rgba(255, 159, 67, 0); }
+}
+
+/* ---------- 9. Adaptation à l'écran ----------
+   Les seuils des media queries ne peuvent pas utiliser de variables :
+   1100px = carte + panneau des compteurs ; 1280px = carte + les deux panneaux. */
+
+/* Fenêtre assez haute : tout tient à l'écran, seule la boutique défile */
+@media (min-height: 650px) {
+  :root {
+    --taille-autel: min(220px, 22vh);
+  }
+
+  .carte {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(var(--hauteur-page) - 2 * var(--ecart));
+    padding: 28px 32px 24px;
+  }
+
+  .sous-titre {
+    margin-top: 6px;
+  }
+
+  .onglets {
+    margin-top: 16px;
+  }
+
+  .autel {
+    margin: 18px auto 10px;
+  }
+
+  #boutique {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 14px;
+    padding-top: 14px;
+    overflow-y: auto;
+  }
+
+  #liste-evolutions,
+  #liste-technologies {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .reset {
+    flex-shrink: 0;
+    align-self: center;
+    margin-top: 12px;
+  }
+}
+
+/* Grand écran : les compteurs passent dans un panneau fixe à gauche */
+@media (min-width: 1100px) {
+  /* Sans cela, un élément "fixed" se caler sur la carte au lieu de la fenêtre */
+  .carte {
+    backdrop-filter: none;
+    background: var(--verre);
+  }
+
+  .scores {
+    position: fixed;
+    top: var(--ecart);
+    left: calc(50% - var(--largeur-carte) / 2 - var(--ecart) - var(--largeur-compteurs));
+    width: var(--largeur-compteurs);
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 20px;
+    margin: 0;
+    padding: 20px 22px;
+    text-align: left;
+    background: var(--verre);
+    border: 1px solid var(--bordure);
+    border-radius: 20px;
+    box-shadow: var(--ombre);
+  }
+
+  .scores .compteur {
+    font-size: 1.9rem;
+  }
+
+  .scores .production {
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.85rem;
+  }
+}
+
+/* Très grand écran : la boutique passe dans un panneau fixe à droite */
+@media (min-width: 1280px) {
+  :root {
+    --taille-autel: min(280px, 34vh);
+  }
+
+  body {
+    align-items: start;   /* la carte s'aligne en haut, comme les panneaux */
+  }
+
+  .carte {
+    min-height: calc(var(--hauteur-page) - 2 * var(--ecart));
+  }
+
+  /* L'image de la ressource est centrée dans la hauteur de la carte */
+  .zone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  #boutique {
+    position: fixed;
+    top: var(--ecart);
+    left: calc(50% + var(--largeur-carte) / 2 + var(--ecart));
+    width: var(--largeur-boutique);
+    max-height: calc(var(--hauteur-page) - 2 * var(--ecart));
+    margin: 0;
+    padding: 20px 22px;
+    overflow-y: auto;
+    background: var(--verre);
+    border: 1px solid var(--bordure);
+    border-radius: 20px;
+    box-shadow: var(--ombre);
+  }
+}
+
+/* ---------- Fer ---------- */
+:root {
+  --fer: #9fb4c7;
+}
+
+.compteur-fer {
+  color: var(--fer);
+  text-shadow: 0 0 24px rgba(159, 180, 199, 0.5);
+}
+
+.onglet[data-onglet="fer"].actif {
+  background: var(--fer);
+}
+
+.autel-fer {
+  background: radial-gradient(circle at 35% 30%, #dfe8f0, #7d8fa3 70%, #3d4a5a);
+  box-shadow:
+    inset 0 -8px 20px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(159, 180, 199, 0.3);
+}
+/* ---------- Codex ---------- */
+.pied {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  flex-shrink: 0;
+}
+
+.pied .reset {
+  margin-top: 0;
+}
+
+.bouton-codex {
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--sable);
+  background: rgba(255, 159, 67, 0.15);
+  border: 1px solid var(--feu);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.bouton-codex:hover {
+  background: rgba(255, 159, 67, 0.3);
+  transform: scale(1.04);
+}
+
+#codex,
+#succes {
+  margin: auto;
+  width: min(92vw, 760px);
+  max-height: 88vh;
+  padding: 0;
+  color: var(--sable);
+  background: linear-gradient(160deg, #2a2140, #14102a);
+  border: 1px solid rgba(243, 227, 195, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
+}
+
+#codex::backdrop {
+  background: rgba(5, 8, 20, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+#codex[open],
+#succes[open] {
+  animation: apparait 0.25s ease-out;
+}
+
+.codex-corps {
+  padding: 24px 28px 28px;
+}
+
+.codex-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.codex-entete h2 {
+  font-family: "Bungee", sans-serif;
+  font-size: 1.8rem;
+}
+
+.codex-fermer {
+  width: 36px;
+  height: 36px;
+  font: inherit;
+  color: var(--sable);
+  background: rgba(243, 227, 195, 0.08);
+  border: 1px solid rgba(243, 227, 195, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.codex-fermer:hover {
+  background: rgba(243, 227, 195, 0.2);
+}
+
+.codex-progression {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.codex-barre {
+  height: 8px;
+  margin: 10px 0 4px;
+  overflow: hidden;
+  background: rgba(243, 227, 195, 0.12);
+  border-radius: 999px;
+}
+
+#codex-barre-remplie,
+#succes-barre-remplie {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--terre), var(--feu));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.codex-rubrique h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 22px 0 10px;
+  font-family: "Bungee", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.codex-compte {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+.codex-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+/* Une fiche : en couleur si obtenue, grisée avec un "?" sinon */
+.fiche {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  text-align: center;
+  border-radius: 16px;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.fiche.obtenue {
+  background: rgba(243, 227, 195, 0.1);
+  border: 1px solid rgba(255, 159, 67, 0.4);
+}
+
+.fiche.verrouillee {
+  background: rgba(243, 227, 195, 0.04);
+  border: 1px dashed rgba(243, 227, 195, 0.2);
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.fiche-icone {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  font-size: 2rem;
+}
+
+.fiche.verrouillee .fiche-icone {
+  font-family: "Bungee", sans-serif;
+  opacity: 0.7;
+}
+
+.fiche-icone img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.fiche-nom {
+  font-size: 0.9rem;
+}
+
+.fiche small {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.fiche.cliquable-fiche {
+  cursor: pointer;
+}
+
+.fiche.cliquable-fiche:hover {
+  background: rgba(243, 227, 195, 0.16);
+  transform: translateY(-2px);
+}
+/* ---------- Succès ---------- */
+.succes-bonus {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--feu);
+}
+
+/* La notification de succès débloqué */
+#toasts {
+  position: fixed;
+  inset: auto auto 24px 50%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#toasts:popover-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: var(--sable);
+  background: linear-gradient(160deg, #2a2140, #14102a);
+  border: 1px solid var(--feu);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: toast 4s ease-in-out forwards;
+}
+
+.toast-icone {
+  font-size: 1.8rem;
+}
+
+.toast strong {
+  display: block;
+  font-family: "Bungee", sans-serif;
+  font-size: 0.7rem;
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--feu);
+}
+
+.toast-nom {
+  display: block;
+  font-weight: 700;
+}
+
+.toast small {
+  opacity: 0.7;
+}
+
+@keyframes toast {
+  0%   { opacity: 0; transform: translateY(20px); }
+  8%   { opacity: 1; transform: none; }
+  85%  { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+/* ---------- Monuments ---------- */
+
+/* La fenêtre : même style que le Codex (qui réutilise .codex-corps, .codex-entete, etc.) */
+#monuments {
+  margin: auto;
+  width: min(92vw, 760px);
+  max-height: 88vh;
+  padding: 0;
+  color: var(--sable);
+  background: linear-gradient(160deg, #2a2140, #14102a);
+  border: 1px solid rgba(243, 227, 195, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
+}
+
+#monuments::backdrop {
+  background: rgba(5, 8, 20, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+#monuments[open] {
+  animation: apparait 0.25s ease-out;
+}
+
+/* Le bouton du pied de page pulse quand il y a du nouveau */
+.bouton-codex.attention {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.monuments-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* Une carte de monument */
+.monument {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: rgba(243, 227, 195, 0.06);
+  border: 1px solid rgba(243, 227, 195, 0.18);
+  border-radius: 18px;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.monument [hidden] {
+  display: none !important;
+}
+
+.monument-icone {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  font-size: 2.4rem;
+}
+
+.monument-corps {
+  flex: 1;
+  min-width: 0;
+}
+
+.monument-nom {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.monument-effet {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--feu);
+}
+
+.monument-action {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.monument-statut {
+  font-weight: 700;
+  color: #9be29b;
+}
+
+/* Les ressources demandées, avec une barre de progression chacune */
+.monument-couts {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cout-ligne {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+
+.cout-nom {
+  opacity: 0.85;
+}
+
+.cout-barre {
+  height: 6px;
+  overflow: hidden;
+  background: rgba(243, 227, 195, 0.12);
+  border-radius: 999px;
+}
+
+.cout-barre > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--feu);
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+
+.cout-ligne[data-ressource="bronze"] .cout-barre > span {
+  background: var(--bronze, #e0a36b);
+}
+
+.cout-ligne[data-ressource="fer"] .cout-barre > span {
+  background: var(--fer, #9fb4c7);
+}
+
+.cout-valeur {
+  min-width: 11ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.cout-ligne.ok .cout-valeur {
+  color: #9be29b;
+  opacity: 1;
+}
+
+/* Les états : pas encore découvert, visible, payable, construit */
+.monument.verrouille {
+  border-style: dashed;
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.monument.verrouille .monument-icone {
+  font-family: "Bungee", sans-serif;
+  opacity: 0.7;
+}
+
+.monument.disponible {
+  border-color: rgba(255, 159, 67, 0.35);
+}
+
+.monument.pret {
+  border-color: var(--feu);
+  box-shadow: 0 0 0 1px var(--feu), 0 0 24px rgba(255, 159, 67, 0.25);
+}
+
+.monument.construit {
+  background: rgba(243, 227, 195, 0.1);
+  border-color: rgba(255, 159, 67, 0.4);
+  cursor: pointer;
+}
+
+.monument.construit:hover {
+  background: rgba(243, 227, 195, 0.16);
+  transform: translateY(-2px);
+}
+
+/* Petit écran : le bouton passe sous la carte */
+@media (max-width: 560px) {
+  .monument {
+    flex-wrap: wrap;
+  }
+
+  .monument-action {
+    width: 100%;
+  }
+
+  .monument-action .acheter {
+    width: 100%;
+  }
+}
