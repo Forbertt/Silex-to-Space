@@ -28,6 +28,21 @@ D'autres ressources arriveront bientôt !
 
 🔎 Exemple de secret : cliquer sur « Réinitialiser la partie », puis annuler, permet de débloquer le secret « Hésitation ».
 
+## 🧪 Aperçu du jeu après un certain temps
+
+Vous souhaitez découvrir à quoi ressemble le jeu après avoir accumulé des ressources ? Vous pouvez simuler une progression en quelques secondes :
+
+1. Ouvrez la console du navigateur avec **F12**.
+2. Copiez-collez le code suivant, puis appuyez sur **Entrée** :
+
+```js
+etat.total.silex = 200000;
+etat.stock.silex = 200000;
+sauvegarder();
+```
+
+Vous disposerez ainsi de **200 000 silex** pour explorer le jeu avec davantage de ressources.
+
 ## 🚧 État du développement
 
 **Implémenté**
