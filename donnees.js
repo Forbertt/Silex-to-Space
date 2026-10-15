@@ -13,7 +13,9 @@ const CROISSANCE_PAR_DEFAUT = 1.15;
 const ressources = [
   { id: "silex", nom: "silex" },
   { id: "bronze", nom: "bronze", debloque: { ressource: "silex", quantite: 200000 } },
-  { id: "fer", nom: "fer", debloque: { ressource: "bronze", quantite: 25000 } }
+  { id: "fer", nom: "fer", debloque: { ressource: "bronze", quantite: 25000 } },
+  { id: "acier", nom: "acier", debloque: { ressource: "fer", quantite: 20000 } },
+  { id: "aluminium", nom: "aluminium", debloque: { ressource: "acier", quantite: 15000 } }
 ];
 
 // Découvertes Wikipédia, déclenchées par le total produit d'une ressource.
@@ -122,7 +124,32 @@ const paliers = [
     article: "Haut fourneau",
     texte: "Bien plus grand qu'un bas fourneau, le haut fourneau fait fondre le fer et produit en continu.",
     bonus: "Évolution débloquée : le Haut fourneau !"
-  }
+  },
+
+  // --- Acier ---
+  { 
+    id: "acier-10", ressource: "acier", seuil: 10, titre: "L'acier", article: "Acier",
+    texte: "L'acier est un alliage de fer et de carbone, bien plus solide et plus souple que le fer seul.",
+    url: "https://fr.wikipedia.org/wiki/Acier",
+    bonus: "Évolution débloquée : l'Apprenti aciériste !" },
+  { 
+    id: "acier-100", ressource: "acier", seuil: 100, titre: "Le procédé Bessemer", article: "Procédé Bessemer",
+    texte: "Au milieu du XIXe siècle, Henry Bessemer souffle de l'air dans la fonte en fusion pour produire de l'acier en grande quantité.",
+    url: "https://fr.wikipedia.org/wiki/Procédé_Bessemer",
+    bonus: "Évolution débloquée : le Convertisseur Bessemer !" },
+  { 
+    id: "acier-500", ressource: "acier", seuil: 500, titre: "Les gratte-ciel", article: "Gratte-ciel",
+    texte: "Sans charpente en acier, impossible de construire des tours qui touchent les nuages.",
+    url: "https://fr.wikipedia.org/wiki/Gratte-ciel",
+    bonus: "Évolution débloquée : l'Aciérie électrique !" },
+
+    // --- Aluminium ---
+    {
+      id: "aluminium-10", ressource: "aluminium", seuil: 10, titre: "Feuille d'aluminium",
+      article: "Feuille d'aluminium",
+      texte: "La feuille d'aluminium, ou papier d'aluminium, est une tôle dont l'épaisseur est inférieure à 0,2 mm.",
+      bonus: "Évolution débloqué : Chapeau en aluminium"
+    }
 ];
 
 // Bâtiments : achetables plusieurs fois, ils produisent une ressource en continu.
@@ -231,6 +258,47 @@ const ameliorations = [
     debloque: { ressource: "bronze", quantite: 25000 },
     cout: { ressource: "bronze", base: 30000 },
     produit: "fer", production: 10
+  },
+
+  // --- Acier ---
+  { 
+    id: "apprenti-acieriste", nom: "Apprenti aciériste", icone: "🧑‍🏭",
+    description: "Il surveille la coulée de l'acier.",
+    debloque: { ressource: "acier", quantite: 10 },
+    cout: { ressource: "acier", base: 20 },
+    produit: "acier", production: 0.5
+  },
+  { 
+    id: "convertisseur", nom: "Convertisseur Bessemer", icone: "🔥",
+    description: "Transforme la fonte en acier à grande vitesse.",
+    debloque: { ressource: "acier", quantite: 100 },
+    cout: { ressource: "acier", base: 200 },
+    produit: "acier", production: 3
+  },
+  {
+    id: "acierie-electrique", nom: "Aciérie électrique", icone: "⚡",
+    description: "Un arc électrique fait fondre la ferraille.",
+    debloque: { ressource: "acier", quantite: 500 },
+    cout: { ressource: "acier", base: 1500 },
+    produit: "acier", production: 15
+  },
+
+  // le "pont" : payé en fer, c'est lui qui fait décoller la ressource
+  { 
+    id: "acierie-integree", nom: "Aciérie intégrée", icone: "🏭",
+    description: "Du minerai à la poutrelle, tout sur un site.",
+    debloque: { ressource: "fer", quantite: 1440000 },
+    cout: { ressource: "fer", base: 1800000 },
+    produit: "acier", production: 600
+  },
+
+  // --- Aluminium --- 
+  { 
+    id: "chapeau-aluminium", nom: "Chapeau en aluminium", icone: "🪖",
+    description: "Coiffe composée d'une ou plusieurs feuille de papier aluminium.",
+    debloque: { ressource: "acier", quantite: 10 },
+    cout: { ressource: "aluminium", base: 20 },
+    produit: "aluminium", production: 0.5
   }
 ];
 
@@ -281,7 +349,23 @@ const technologies = [
     debloque: { ressource: "fer", quantite: 300 },
     cout: { ressource: "fer", prix: 1000 },
     effet: { ressource: "silex", facteur: 3 }
-  }
+  },
+  
+  // --- Payés en acier --- 
+  { 
+    id: "outils-acier", nom: "Outils en acier", description: "Acier ×2.", icone: "🔧",
+    debloque: { ressource: "acier", quantite: 20 }, 
+    cout: { ressource: "acier", prix: 100 }, 
+    effet: { ressource: "fer", facteur: 2 }
+  },
+
+  // --- Payés en aluminium --- 
+  { 
+    id: "feuilles-aluminium", nom: "Feuilles d'aluminium", description: "Production d'aluminium x2.", icone: "🪖",
+    debloque: { ressource: "aluminium", quantite: 20 }, 
+    cout: { ressource: "aluminium", prix: 100 }, 
+    effet: { ressource: "acier", facteur: 2 }
+  },
 ];
 /* ---------- Monuments ----------
    Constructions uniques, payées avec PLUSIEURS ressources à la fois.

@@ -33,12 +33,26 @@
     <small id="production-fer" class="production"></small>
   </div>
 
+  <div class="score" id="score-acier" hidden>
+    <span id="compteur-acier" class="compteur compteur-acier">0</span>
+    <small>acier</small>
+    <small id="production-acier" class="production"></small>
+  </div>
+
+  <div class="score" id="score-aluminium" hidden>
+    <span id="compteur-aluminium" class="compteur compteur-aluminium">0</span>
+    <small>aluminium</small>
+    <small id="production-aluminium" class="production"></small>
+  </div>
+
 </div>
 
     <nav class="onglets" id="onglets" hidden>
   <button class="onglet actif" data-onglet="silex">Silex</button>
   <button class="onglet" data-onglet="bronze" hidden>Bronze</button>
   <button class="onglet" data-onglet="fer" hidden>Fer</button>
+  <button class="onglet" data-onglet="acier" hidden>Acier</button>
+  <button class="onglet" data-onglet="aluminium" hidden>Aluminium</button>
 </nav>
 
 <section class="zone" id="zone-silex">
@@ -60,6 +74,20 @@
     <img id="clic-fer" class="cliquable" src="img/fer.png" alt="Forger du fer" draggable="false">
   </div>
   <p class="astuce">Clique sur le fer pour le forger</p>
+</section>
+
+<section class="zone" id="zone-acier" hidden>
+  <div class="autel autel-acier">
+    <img id="clic-acier" class="cliquable" src="img/acier.png" alt="Forger du acier" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le acier pour le forger</p>
+</section>
+
+<section class="zone" id="zone-aluminium" hidden>
+  <div class="autel autel-aluminium">
+    <img id="clic-aluminium" class="cliquable" src="img/aluminium.png" alt="Forger du aluminium" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le aluminium pour le forger</p>
 </section>
 
     <section id="boutique" hidden>
