@@ -1,8 +1,10 @@
 /* =========================================================
-   SILEX TO SPACE : feuille de style
-   1. Variables        2. Base               3. Carte et titre
-   4. Compteurs        5. Onglets et clic    6. Boutique
-   7. Pop-up           8. Animations         9. Adaptation à l'écran
+   SILEX TO SPACE : feuille de style (version optimisée)
+   1. Variables          2. Base               3. Carte et titre
+   4. Compteurs          5. Onglets et clic    6. Boutique
+   7. Fenêtres (modales) 8. Codex et succès    9. Monuments
+   10. Animations        11. Survol et accessibilité
+   12. Adaptation à l'écran (toujours en dernier)
    ========================================================= */
 
 /* ---------- 1. Variables ---------- */
@@ -13,9 +15,15 @@
   --sable: #f3e3c3;
   --feu: #ff9f43;
   --bronze: #e0a36b;
+  --fer: #9fb4c7;
+  --ok: #9be29b;
+  --encre: #1a1020;                        /* texte sur fond clair (boutons) */
 
   --verre: rgba(20, 15, 35, 0.7);          /* fond des panneaux */
   --bordure: rgba(243, 227, 195, 0.25);
+  --filet: rgba(243, 227, 195, 0.2);
+  --voile: rgba(243, 227, 195, 0.08);      /* fond léger des éléments */
+  --fond-modale: linear-gradient(160deg, #2a2140, #14102a);
   --ombre: 0 20px 60px rgba(0, 0, 0, 0.4);
 
   --ecart: 24px;                           /* marge de la page et écart entre panneaux */
@@ -24,6 +32,9 @@
   --largeur-boutique: 360px;
   --hauteur-page: 100vh;
   --taille-autel: 220px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
 }
 
 @supports (height: 100dvh) {
@@ -32,10 +43,19 @@
   }
 }
 
+/* Couleur de chaque ressource : une seule variable --c, utilisée partout.
+   Pour une nouvelle ressource, ajoute une ligne ici. */
+.compteur-bronze, [data-onglet="bronze"], [data-ressource="bronze"] { --c: var(--bronze); }
+.compteur-fer,    [data-onglet="fer"],    [data-ressource="fer"]    { --c: var(--fer); }
+
 /* ---------- 2. Base ---------- */
 * {
   box-sizing: border-box;
   margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Un élément "hidden" n'est jamais affiché, même si une autre règle définit son display */
@@ -71,6 +91,15 @@ body::before {
   mask-image: linear-gradient(to bottom, #000 40%, transparent 80%);
 }
 
+/* Zones tactiles : pas de zoom au double-tap, pas de flash gris */
+.cliquable,
+.onglet,
+.acheter,
+.bouton-codex {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ---------- 3. Carte et titre ---------- */
 .carte {
   width: 100%;
@@ -104,6 +133,17 @@ body::before {
   opacity: 0.8;
 }
 
+/* Pied de carte : boutons Codex, Monuments, reset */
+.pied {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  flex-shrink: 0;
+}
+
 .reset {
   margin-top: 16px;
   padding: 6px 12px;
@@ -119,6 +159,28 @@ body::before {
 
 .reset:hover {
   opacity: 1;
+}
+
+.pied .reset {
+  margin-top: 0;
+}
+
+.bouton-codex {
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--sable);
+  background: rgba(255, 159, 67, 0.15);
+  border: 1px solid var(--feu);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+
+/* Le bouton pulse quand il y a du nouveau */
+.bouton-codex.attention {
+  animation: pulse 1.2s ease-in-out infinite;
 }
 
 /* ---------- 4. Compteurs ---------- */
@@ -142,13 +204,8 @@ body::before {
   font-family: "Bungee", sans-serif;
   font-size: clamp(2.2rem, 9vw, 3.4rem);
   line-height: 1;
-  color: var(--feu);
-  text-shadow: 0 0 24px rgba(255, 159, 67, 0.5);
-}
-
-.compteur-bronze {
-  color: var(--bronze);
-  text-shadow: 0 0 24px rgba(224, 163, 107, 0.5);
+  color: var(--c, var(--feu));
+  text-shadow: 0 0 24px color-mix(in srgb, var(--c, var(--feu)) 50%, transparent);
 }
 
 .production {
@@ -161,6 +218,7 @@ body::before {
 /* ---------- 5. Onglets et zone de clic ---------- */
 .onglets {
   display: flex;
+  flex-wrap: wrap;                         /* les onglets passent à la ligne au lieu de déborder */
   justify-content: center;
   gap: 8px;
   margin-top: 24px;
@@ -171,8 +229,8 @@ body::before {
   font: inherit;
   font-weight: 700;
   color: var(--sable);
-  background: rgba(243, 227, 195, 0.08);
-  border: 1px solid rgba(243, 227, 195, 0.2);
+  background: var(--voile);
+  border: 1px solid var(--filet);
   border-radius: 999px;
   opacity: 0.7;
   cursor: pointer;
@@ -184,14 +242,10 @@ body::before {
 }
 
 .onglet.actif {
-  color: #1a1020;
-  background: var(--feu);
+  color: var(--encre);
+  background: var(--c, var(--feu));
   border-color: transparent;
   opacity: 1;
-}
-
-.onglet[data-onglet="bronze"].actif {
-  background: var(--bronze);
 }
 
 /* L'onglet pulse tant qu'on ne l'a pas visité */
@@ -199,26 +253,38 @@ body::before {
   animation: pulse 1.2s ease-in-out infinite;
 }
 
-/* Le socle rond sous l'image */
+/* Le socle rond sous l'image : seules les 4 variables changent d'une ressource à l'autre */
 .autel {
+  --h1: #e9d3a8;
+  --h2: #a8764a;
+  --h3: #6b4526;
+  --lueur: rgba(255, 159, 67, 0.25);
+
   width: var(--taille-autel);
   aspect-ratio: 1;
   margin: 28px auto 16px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #e9d3a8, #a8764a 70%, #6b4526);
+  background: radial-gradient(circle at 35% 30%, var(--h1), var(--h2) 70%, var(--h3));
   box-shadow:
     inset 0 -8px 20px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(255, 159, 67, 0.25);
+    0 0 40px var(--lueur);
   animation: flotte 4s ease-in-out infinite;
 }
 
 .autel-bronze {
-  background: radial-gradient(circle at 35% 30%, #f0c48a, #b8733a 70%, #6b3a1a);
-  box-shadow:
-    inset 0 -8px 20px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(224, 163, 107, 0.3);
+  --h1: #f0c48a;
+  --h2: #b8733a;
+  --h3: #6b3a1a;
+  --lueur: rgba(224, 163, 107, 0.3);
+}
+
+.autel-fer {
+  --h1: #dfe8f0;
+  --h2: #7d8fa3;
+  --h3: #3d4a5a;
+  --lueur: rgba(159, 180, 199, 0.3);
 }
 
 .cliquable {
@@ -228,14 +294,6 @@ body::before {
   -webkit-user-drag: none;
   filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.4));
   transition: transform 0.1s;
-}
-
-.cliquable:hover {
-  transform: scale(1.06) rotate(-3deg);
-}
-
-.cliquable:active {
-  transform: scale(0.92);
 }
 
 /* L'image du bronze est rognée en cercle */
@@ -266,7 +324,7 @@ body::before {
   margin-top: 24px;
   padding-top: 20px;
   text-align: left;
-  border-top: 1px solid rgba(243, 227, 195, 0.2);
+  border-top: 1px solid var(--filet);
   animation: apparait 0.4s ease-out;
 }
 
@@ -288,13 +346,6 @@ body::before {
   padding-right: 4px;
 }
 
-#boutique,
-#liste-evolutions,
-#liste-technologies {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
-}
-
 .evolution {
   display: flex;
   align-items: center;
@@ -302,7 +353,7 @@ body::before {
   gap: 12px;
   padding: 12px 14px;
   margin-bottom: 8px;
-  background: rgba(243, 227, 195, 0.08);
+  background: var(--voile);
   border: 1px solid rgba(243, 227, 195, 0.18);
   border-radius: 16px;
 }
@@ -330,7 +381,7 @@ body::before {
   padding: 8px 14px;
   font: inherit;
   font-weight: 700;
-  color: #1a1020;
+  color: var(--encre);
   background: var(--feu);
   border: none;
   border-radius: 999px;
@@ -338,35 +389,44 @@ body::before {
   transition: transform 0.1s;
 }
 
-.acheter:hover:not(:disabled) {
-  transform: scale(1.05);
-}
-
 .acheter:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
 
-/* ---------- 7. Pop-up de découverte ---------- */
-#decouverte {
+/* ---------- 7. Fenêtres (modales) ---------- */
+dialog {
   margin: auto;
-  width: min(90vw, 420px);
-  padding: 32px 28px;
-  text-align: center;
+  padding: 0;
   color: var(--sable);
-  background: linear-gradient(160deg, #2a2140, #14102a);
+  background: var(--fond-modale);
   border: 1px solid rgba(243, 227, 195, 0.35);
   border-radius: 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-#decouverte::backdrop {
+dialog::backdrop {
   background: rgba(5, 8, 20, 0.7);
   backdrop-filter: blur(4px);
 }
 
-#decouverte[open] {
+dialog[open] {
   animation: apparait 0.25s ease-out;
+}
+
+/* Codex, succès et monuments partagent la même taille */
+#codex,
+#succes,
+#monuments {
+  width: min(92vw, 760px);
+  max-height: 88vh;
+}
+
+/* Pop-up de découverte */
+#decouverte {
+  width: min(90vw, 420px);
+  padding: 32px 28px;
+  text-align: center;
 }
 
 #decouverte h2 {
@@ -416,15 +476,11 @@ body::before {
   margin: 20px 0 12px;
   padding: 12px 22px;
   font-weight: 700;
-  color: #1a1020;
+  color: var(--encre);
   text-decoration: none;
   background: var(--feu);
   border-radius: 999px;
   transition: transform 0.1s;
-}
-
-#decouverte-lien:hover {
-  transform: scale(1.05);
 }
 
 #decouverte-fermer {
@@ -443,7 +499,337 @@ body::before {
   opacity: 1;
 }
 
-/* ---------- 8. Animations ---------- */
+/* ---------- 8. Codex et succès ---------- */
+.codex-corps {
+  padding: 24px 28px 28px;
+}
+
+.codex-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.codex-entete h2 {
+  font-family: "Bungee", sans-serif;
+  font-size: 1.8rem;
+}
+
+.codex-fermer {
+  width: 36px;
+  height: 36px;
+  font: inherit;
+  color: var(--sable);
+  background: var(--voile);
+  border: 1px solid var(--filet);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.codex-fermer:hover {
+  background: var(--filet);
+}
+
+.codex-progression {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.codex-barre {
+  height: 8px;
+  margin: 10px 0 4px;
+  overflow: hidden;
+  background: rgba(243, 227, 195, 0.12);
+  border-radius: 999px;
+}
+
+#codex-barre-remplie,
+#succes-barre-remplie {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--terre), var(--feu));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.codex-rubrique h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 22px 0 10px;
+  font-family: "Bungee", sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.codex-compte {
+  font-family: "Nunito", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  opacity: 0.7;
+}
+
+.codex-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+/* Une fiche : en couleur si obtenue, grisée avec un "?" sinon */
+.fiche {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  text-align: center;
+  border-radius: 16px;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.fiche.obtenue {
+  background: rgba(243, 227, 195, 0.1);
+  border: 1px solid rgba(255, 159, 67, 0.4);
+}
+
+.fiche.verrouillee {
+  background: rgba(243, 227, 195, 0.04);
+  border: 1px dashed var(--filet);
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.fiche.cliquable-fiche {
+  cursor: pointer;
+}
+
+.fiche-icone {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  font-size: 2rem;
+}
+
+.fiche.verrouillee .fiche-icone {
+  font-family: "Bungee", sans-serif;
+  opacity: 0.7;
+}
+
+.fiche-icone img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.fiche-nom {
+  font-size: 0.9rem;
+}
+
+.fiche small {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.succes-bonus {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--feu);
+}
+
+/* La notification de succès débloqué */
+#toasts {
+  position: fixed;
+  inset: auto auto 24px 50%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: none;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+#toasts:popover-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 92vw;
+  padding: 12px 20px;
+  color: var(--sable);
+  background: var(--fond-modale);
+  border: 1px solid var(--feu);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: toast 4s ease-in-out forwards;
+}
+
+.toast-icone {
+  font-size: 1.8rem;
+}
+
+.toast strong {
+  display: block;
+  font-family: "Bungee", sans-serif;
+  font-size: 0.7rem;
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--feu);
+}
+
+.toast-nom {
+  display: block;
+  font-weight: 700;
+}
+
+.toast small {
+  opacity: 0.7;
+}
+
+/* ---------- 9. Monuments ---------- */
+.monuments-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.monument {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: rgba(243, 227, 195, 0.06);
+  border: 1px solid rgba(243, 227, 195, 0.18);
+  border-radius: 18px;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.monument-icone {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  font-size: 2.4rem;
+}
+
+.monument-corps {
+  flex: 1;
+  min-width: 0;
+}
+
+.monument-nom {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.monument-effet {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--feu);
+}
+
+.monument-action {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.monument-statut {
+  font-weight: 700;
+  color: var(--ok);
+}
+
+/* Les ressources demandées, avec une barre de progression chacune */
+.monument-couts {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cout-ligne {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+
+.cout-nom {
+  opacity: 0.85;
+}
+
+.cout-barre {
+  height: 6px;
+  overflow: hidden;
+  background: rgba(243, 227, 195, 0.12);
+  border-radius: 999px;
+}
+
+.cout-barre > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--c, var(--feu));
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+
+.cout-valeur {
+  min-width: 11ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.cout-ligne.ok .cout-valeur {
+  color: var(--ok);
+  opacity: 1;
+}
+
+/* Les états : pas encore découvert, visible, payable, construit */
+.monument.verrouille {
+  border-style: dashed;
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.monument.verrouille .monument-icone {
+  font-family: "Bungee", sans-serif;
+  opacity: 0.7;
+}
+
+.monument.disponible {
+  border-color: rgba(255, 159, 67, 0.35);
+}
+
+.monument.pret {
+  border-color: var(--feu);
+  box-shadow: 0 0 0 1px var(--feu), 0 0 24px rgba(255, 159, 67, 0.25);
+}
+
+.monument.construit {
+  background: rgba(243, 227, 195, 0.1);
+  border-color: rgba(255, 159, 67, 0.4);
+  cursor: pointer;
+}
+
+/* ---------- 10. Animations ---------- */
 @keyframes flotte {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-8px); }
@@ -464,9 +850,61 @@ body::before {
   50%      { box-shadow: 0 0 0 8px rgba(255, 159, 67, 0); }
 }
 
-/* ---------- 9. Adaptation à l'écran ----------
+@keyframes toast {
+  0%   { opacity: 0; transform: translateY(20px); }
+  8%   { opacity: 1; transform: none; }
+  85%  { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* ---------- 11. Survol et accessibilité ---------- */
+
+/* Les effets de survol ne s'appliquent qu'aux appareils avec souris
+   (sur mobile, ils restaient "collés" après un tap) */
+@media (hover: hover) {
+  .cliquable:hover {
+    transform: scale(1.06) rotate(-3deg);
+  }
+
+  .acheter:hover:not(:disabled),
+  #decouverte-lien:hover {
+    transform: scale(1.05);
+  }
+
+  .bouton-codex:hover {
+    background: rgba(255, 159, 67, 0.3);
+    transform: scale(1.04);
+  }
+
+  .fiche.cliquable-fiche:hover {
+    background: rgba(243, 227, 195, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .monument.construit:hover {
+    background: rgba(243, 227, 195, 0.16);
+    transform: translateY(-2px);
+  }
+}
+
+/* Placé après le survol pour l'emporter pendant le clic */
+.cliquable:active {
+  transform: scale(0.92);
+}
+
+/* Les animations en boucle sont coupées pour ceux qui l'ont demandé dans leur système */
+@media (prefers-reduced-motion: reduce) {
+  .autel,
+  .onglet.nouveau,
+  .bouton-codex.attention {
+    animation: none;
+  }
+}
+
+/* ---------- 12. Adaptation à l'écran ----------
    Les seuils des media queries ne peuvent pas utiliser de variables :
-   1100px = carte + panneau des compteurs ; 1280px = carte + les deux panneaux. */
+   1100px = carte + panneau des compteurs ; 1280px = carte + les deux panneaux.
+   L'ordre compte : les règles mobiles (max-width) doivent rester en dernier. */
 
 /* Fenêtre assez haute : tout tient à l'écran, seule la boutique défile */
 @media (min-height: 650px) {
@@ -513,11 +951,15 @@ body::before {
     align-self: center;
     margin-top: 12px;
   }
+
+  .pied .reset {
+    margin-top: 0;
+  }
 }
 
 /* Grand écran : les compteurs passent dans un panneau fixe à gauche */
 @media (min-width: 1100px) {
-  /* Sans cela, un élément "fixed" se caler sur la carte au lieu de la fenêtre */
+  /* Sans cela, un élément "fixed" se calerait sur la carte au lieu de la fenêtre */
   .carte {
     backdrop-filter: none;
     background: var(--verre);
@@ -589,482 +1031,145 @@ body::before {
   }
 }
 
-/* ---------- Fer ---------- */
-:root {
-  --fer: #9fb4c7;
-}
-
-.compteur-fer {
-  color: var(--fer);
-  text-shadow: 0 0 24px rgba(159, 180, 199, 0.5);
-}
-
-.onglet[data-onglet="fer"].actif {
-  background: var(--fer);
-}
-
-.autel-fer {
-  background: radial-gradient(circle at 35% 30%, #dfe8f0, #7d8fa3 70%, #3d4a5a);
-  box-shadow:
-    inset 0 -8px 20px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(159, 180, 199, 0.3);
-}
-/* ---------- Codex ---------- */
-.pied {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
-  flex-shrink: 0;
-}
-
-.pied .reset {
-  margin-top: 0;
-}
-
-.bouton-codex {
-  padding: 8px 16px;
-  font: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--sable);
-  background: rgba(255, 159, 67, 0.15);
-  border: 1px solid var(--feu);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: transform 0.1s, background 0.15s;
-}
-
-.bouton-codex:hover {
-  background: rgba(255, 159, 67, 0.3);
-  transform: scale(1.04);
-}
-
-#codex,
-#succes {
-  margin: auto;
-  width: min(92vw, 760px);
-  max-height: 88vh;
-  padding: 0;
-  color: var(--sable);
-  background: linear-gradient(160deg, #2a2140, #14102a);
-  border: 1px solid rgba(243, 227, 195, 0.35);
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
-}
-
-#codex::backdrop {
-  background: rgba(5, 8, 20, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-#codex[open],
-#succes[open] {
-  animation: apparait 0.25s ease-out;
-}
-
-.codex-corps {
-  padding: 24px 28px 28px;
-}
-
-.codex-entete {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.codex-entete h2 {
-  font-family: "Bungee", sans-serif;
-  font-size: 1.8rem;
-}
-
-.codex-fermer {
-  width: 36px;
-  height: 36px;
-  font: inherit;
-  color: var(--sable);
-  background: rgba(243, 227, 195, 0.08);
-  border: 1px solid rgba(243, 227, 195, 0.2);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.codex-fermer:hover {
-  background: rgba(243, 227, 195, 0.2);
-}
-
-.codex-progression {
-  margin-top: 6px;
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-.codex-barre {
-  height: 8px;
-  margin: 10px 0 4px;
-  overflow: hidden;
-  background: rgba(243, 227, 195, 0.12);
-  border-radius: 999px;
-}
-
-#codex-barre-remplie,
-#succes-barre-remplie {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, var(--terre), var(--feu));
-  border-radius: 999px;
-  transition: width 0.4s ease;
-}
-
-.codex-rubrique h3 {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin: 22px 0 10px;
-  font-family: "Bungee", sans-serif;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-}
-
-.codex-compte {
-  font-family: "Nunito", sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0;
-  opacity: 0.7;
-}
-
-.codex-grille {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
-}
-
-/* Une fiche : en couleur si obtenue, grisée avec un "?" sinon */
-.fiche {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 14px 10px;
-  text-align: center;
-  border-radius: 16px;
-  transition: transform 0.1s, background 0.15s;
-}
-
-.fiche.obtenue {
-  background: rgba(243, 227, 195, 0.1);
-  border: 1px solid rgba(255, 159, 67, 0.4);
-}
-
-.fiche.verrouillee {
-  background: rgba(243, 227, 195, 0.04);
-  border: 1px dashed rgba(243, 227, 195, 0.2);
-  filter: grayscale(1);
-  opacity: 0.55;
-}
-
-.fiche-icone {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  font-size: 2rem;
-}
-
-.fiche.verrouillee .fiche-icone {
-  font-family: "Bungee", sans-serif;
-  opacity: 0.7;
-}
-
-.fiche-icone img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 12px;
-}
-
-.fiche-nom {
-  font-size: 0.9rem;
-}
-
-.fiche small {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-.fiche.cliquable-fiche {
-  cursor: pointer;
-}
-
-.fiche.cliquable-fiche:hover {
-  background: rgba(243, 227, 195, 0.16);
-  transform: translateY(-2px);
-}
-/* ---------- Succès ---------- */
-.succes-bonus {
-  margin: 6px 0 0;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--feu);
-}
-
-/* La notification de succès débloqué */
-#toasts {
-  position: fixed;
-  inset: auto auto 24px 50%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  overflow: visible;
-  background: none;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-#toasts:popover-open {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.toast {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  color: var(--sable);
-  background: linear-gradient(160deg, #2a2140, #14102a);
-  border: 1px solid var(--feu);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  animation: toast 4s ease-in-out forwards;
-}
-
-.toast-icone {
-  font-size: 1.8rem;
-}
-
-.toast strong {
-  display: block;
-  font-family: "Bungee", sans-serif;
-  font-size: 0.7rem;
-  font-weight: normal;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--feu);
-}
-
-.toast-nom {
-  display: block;
-  font-weight: 700;
-}
-
-.toast small {
-  opacity: 0.7;
-}
-
-@keyframes toast {
-  0%   { opacity: 0; transform: translateY(20px); }
-  8%   { opacity: 1; transform: none; }
-  85%  { opacity: 1; transform: none; }
-  100% { opacity: 0; transform: translateY(-10px); }
-}
-/* ---------- Monuments ---------- */
-
-/* La fenêtre : même style que le Codex (qui réutilise .codex-corps, .codex-entete, etc.) */
-#monuments {
-  margin: auto;
-  width: min(92vw, 760px);
-  max-height: 88vh;
-  padding: 0;
-  color: var(--sable);
-  background: linear-gradient(160deg, #2a2140, #14102a);
-  border: 1px solid rgba(243, 227, 195, 0.35);
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(243, 227, 195, 0.4) transparent;
-}
-
-#monuments::backdrop {
-  background: rgba(5, 8, 20, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-#monuments[open] {
-  animation: apparait 0.25s ease-out;
-}
-
-/* Le bouton du pied de page pulse quand il y a du nouveau */
-.bouton-codex.attention {
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-.monuments-liste {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-/* Une carte de monument */
-.monument {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 18px;
-  background: rgba(243, 227, 195, 0.06);
-  border: 1px solid rgba(243, 227, 195, 0.18);
-  border-radius: 18px;
-  transition: transform 0.1s, background 0.15s;
-}
-
-.monument [hidden] {
-  display: none !important;
-}
-
-.monument-icone {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  font-size: 2.4rem;
-}
-
-.monument-corps {
-  flex: 1;
-  min-width: 0;
-}
-
-.monument-nom {
-  display: block;
-  font-size: 1.05rem;
-}
-
-.monument-effet {
-  display: block;
-  margin-top: 2px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--feu);
-}
-
-.monument-action {
-  flex-shrink: 0;
-  text-align: center;
-}
-
-.monument-statut {
-  font-weight: 700;
-  color: #9be29b;
-}
-
-/* Les ressources demandées, avec une barre de progression chacune */
-.monument-couts {
-  display: grid;
-  gap: 8px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.cout-ligne {
-  display: grid;
-  grid-template-columns: 64px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.8rem;
-}
-
-.cout-nom {
-  opacity: 0.85;
-}
-
-.cout-barre {
-  height: 6px;
-  overflow: hidden;
-  background: rgba(243, 227, 195, 0.12);
-  border-radius: 999px;
-}
-
-.cout-barre > span {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: var(--feu);
-  border-radius: inherit;
-  transition: width 0.4s ease;
-}
-
-.cout-ligne[data-ressource="bronze"] .cout-barre > span {
-  background: var(--bronze, #e0a36b);
-}
-
-.cout-ligne[data-ressource="fer"] .cout-barre > span {
-  background: var(--fer, #9fb4c7);
-}
-
-.cout-valeur {
-  min-width: 11ch;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  opacity: 0.85;
-}
-
-.cout-ligne.ok .cout-valeur {
-  color: #9be29b;
-  opacity: 1;
-}
-
-/* Les états : pas encore découvert, visible, payable, construit */
-.monument.verrouille {
-  border-style: dashed;
-  filter: grayscale(1);
-  opacity: 0.6;
-}
-
-.monument.verrouille .monument-icone {
-  font-family: "Bungee", sans-serif;
-  opacity: 0.7;
-}
-
-.monument.disponible {
-  border-color: rgba(255, 159, 67, 0.35);
-}
-
-.monument.pret {
-  border-color: var(--feu);
-  box-shadow: 0 0 0 1px var(--feu), 0 0 24px rgba(255, 159, 67, 0.25);
-}
-
-.monument.construit {
-  background: rgba(243, 227, 195, 0.1);
-  border-color: rgba(255, 159, 67, 0.4);
-  cursor: pointer;
-}
-
-.monument.construit:hover {
-  background: rgba(243, 227, 195, 0.16);
-  transform: translateY(-2px);
-}
-
-/* Petit écran : le bouton passe sous la carte */
+/* Tablette et mobile : une seule colonne, compteurs en pastilles */
+@media (max-width: 700px) {
+  :root {
+    --ecart: 12px;
+    --taille-autel: min(200px, 48vw);
+  }
+
+  .carte {
+    max-height: none;            /* annule la hauteur fixe du media min-height */
+    padding: 22px 16px 18px;
+    border-radius: 22px;
+  }
+
+  #boutique {
+    overflow: visible;
+    flex: none;
+  }
+
+  .onglet {
+    padding: 7px 14px;
+    font-size: 0.9rem;
+  }
+
+  /* Compteurs : grille de pastilles (6 colonnes, 2 par pastille = 3 par ligne) */
+  .scores {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .score {
+    grid-column: span 2;
+    min-width: 0;                /* évite le débordement des gros nombres */
+    padding: 8px 4px;
+    background: rgba(243, 227, 195, 0.06);
+    border: 1px solid rgba(243, 227, 195, 0.15);
+    border-radius: 14px;
+  }
+
+  /* Avec 5 ressources, les 2 pastilles de la dernière ligne sont centrées */
+  .score:nth-child(4):nth-last-child(2) {
+    grid-column: 2 / span 2;
+  }
+
+  .score:nth-child(5):last-child {
+    grid-column: 4 / span 2;
+  }
+
+  .score .compteur {
+    font-size: 1.25rem;
+    text-shadow: none;
+  }
+
+  .score small {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  .production {
+    min-height: 0;
+    margin-top: 2px;
+    font-size: 0.6rem;
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 0.8;
+  }
+
+  .codex-corps {
+    padding: 18px 16px 22px;
+  }
+
+  .codex-entete h2 {
+    font-size: 1.4rem;
+  }
+
+  .codex-grille {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+
+  .evolution {
+    flex-wrap: wrap;
+  }
+
+  .evolution .acheter {
+    width: 100%;
+  }
+
+  .cout-ligne {
+    grid-template-columns: 52px 1fr auto;
+    gap: 8px;
+  }
+
+  .cout-valeur {
+    min-width: 8ch;
+  }
+}
+
+/* Petit écran : le bouton des monuments passe sous la carte */
 @media (max-width: 560px) {
   .monument {
     flex-wrap: wrap;
   }
 
-  .monument-action {
-    width: 100%;
-  }
-
+  .monument-action,
   .monument-action .acheter {
     width: 100%;
+  }
+}
+
+/* Très petits écrans (iPhone SE, etc.) */
+@media (max-width: 380px) {
+  .titre {
+    font-size: 1.8rem;
+  }
+
+  .sous-titre {
+    font-size: 0.85rem;
+  }
+
+  .pied {
+    gap: 6px;
+  }
+
+  .bouton-codex {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Téléphone en paysage : peu de hauteur, on réduit l'autel */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root {
+    --taille-autel: 120px;
+  }
+
+  body {
+    place-items: start center;
   }
 }
