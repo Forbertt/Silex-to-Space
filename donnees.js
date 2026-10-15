@@ -12,7 +12,7 @@ const CROISSANCE_PAR_DEFAUT = 1.15;
 // Les ressources. "debloque" = condition pour afficher le compteur et l'onglet.
 const ressources = [
   { id: "silex", nom: "silex" },
-  { id: "bronze", nom: "bronze", debloque: { ressource: "silex", quantite: 200000 } },
+  { id: "bronze", nom: "bronze", debloque: { ressource: "silex", quantite: 100000 } },
   { id: "fer", nom: "fer", debloque: { ressource: "bronze", quantite: 25000 } },
   { id: "acier", nom: "acier", debloque: { ressource: "fer", quantite: 20000 } },
   { id: "aluminium", nom: "aluminium", debloque: { ressource: "acier", quantite: 15000 } }
@@ -24,49 +24,49 @@ const ressources = [
 const paliers = [
   // --- Silex ---
   {
-    id: "silex-100", ressource: "silex", seuil: 100,
+    id: "silex-25", ressource: "silex", seuil: 25,
     titre: "Le silex",
     article: "Silex",
     texte: "Roche très dure qui se casse en bords tranchants : c'était l'outil préféré des premiers humains.",
     bonus: "Évolution débloquée : l'Apprenti tailleur, un auto-clicker lent !"
   },
   {
-    id: "silex-300", ressource: "silex", seuil: 300,
+    id: "silex-100", ressource: "silex", seuil: 100,
     titre: "Chasseur-cueilleur",
     article: "Chasseur-cueilleur",
     texte: "Pendant des centaines de milliers d'années, les humains ont vécu de chasse et de cueillette, avec des outils de pierre.",
     bonus: "Évolution débloquée : le Chasseur de la tribu !"
   },
   {
-    id: "silex-1000", ressource: "silex", seuil: 1000,
+    id: "silex-500", ressource: "silex", seuil: 500,
     titre: "La maîtrise du feu",
     article: "Maîtrise du feu",
     texte: "Le feu permet de se chauffer, de cuire les aliments et même de rendre certaines pierres plus faciles à tailler.",
     bonus: "Évolution débloquée : le Foyer de chauffe !"
   },
   {
-    id: "silex-5000", ressource: "silex", seuil: 5000,
+    id: "silex-2500", ressource: "silex", seuil: 2500,
     titre: "La taille de la pierre",
     article: "Taille de la pierre",
     texte: "Tailler la pierre consiste à la façonner par éclats successifs pour obtenir des outils et des armes.",
     bonus: "Évolution débloquée : l'Atelier de la tribu !"
   },
   {
-    id: "silex-20000", ressource: "silex", seuil: 20000,
+    id: "silex-10000", ressource: "silex", seuil: 10000,
     titre: "Les mines de silex",
     article: "Mine de silex",
     texte: "Au Néolithique, des groupes creusaient de véritables mines pour extraire le meilleur silex.",
     bonus: "Évolution débloquée : la Mine de silex !"
   },
   {
-    id: "silex-100000", ressource: "silex", seuil: 100000,
+    id: "silex-50000", ressource: "silex", seuil: 50000,
     titre: "Le troc",
     article: "Troc",
     texte: "Bien avant la monnaie, les groupes échangeaient directement des biens, comme les outils et les matières premières.",
     bonus: "Évolution débloquée : le Comptoir d'échange !"
   },
   {
-    id: "silex-200000", ressource: "silex", seuil: 200000,
+    id: "silex-100000", ressource: "silex", seuil: 100000,
     titre: "L'âge du bronze",
     article: "Âge du bronze",
     texte: "En mélangeant du cuivre et de l'étain, les humains inventent le bronze, un métal bien plus solide que la pierre.",
@@ -160,43 +160,43 @@ const ameliorations = [
   {
     id: "apprenti", nom: "Apprenti tailleur", icone: "🔨",
     description: "Un auto-clicker lent, mais fidèle",
-    debloque: { ressource: "silex", quantite: 100 },
-    cout: { ressource: "silex", base: 50 },
+    debloque: { ressource: "silex", quantite: 25 },
+    cout: { ressource: "silex", base: 50  },
     produit: "silex", production: 0.5
   },
   {
     id: "chasseur", nom: "Chasseur de la tribu", icone: "🏹",
     description: "Taille des pointes de lance",
-    debloque: { ressource: "silex", quantite: 300 },
-    cout: { ressource: "silex", base: 250 },
+    debloque: { ressource: "silex", quantite: 100 },
+    cout: { ressource: "silex", base: 200 },
     produit: "silex", production: 2
   },
   {
     id: "foyer", nom: "Foyer de chauffe", icone: "🔥",
     description: "Le feu rend la taille plus facile",
-    debloque: { ressource: "silex", quantite: 1000 },
-    cout: { ressource: "silex", base: 1000 },
+    debloque: { ressource: "silex", quantite: 500 },
+    cout: { ressource: "silex", base: 600 },
     produit: "silex", production: 8
   },
   {
     id: "atelier", nom: "Atelier de la tribu", icone: "🛖",
     description: "Plusieurs tailleurs au travail",
-    debloque: { ressource: "silex", quantite: 5000 },
+    debloque: { ressource: "silex", quantite: 2500 },
     cout: { ressource: "silex", base: 5000 },
     produit: "silex", production: 35
   },
   {
     id: "mine", nom: "Mine de silex", icone: "⛏️",
     description: "Du silex de qualité en abondance",
-    debloque: { ressource: "silex", quantite: 20000 },
-    cout: { ressource: "silex", base: 25000 },
+    debloque: { ressource: "silex", quantite: 10000 },
+    cout: { ressource: "silex", base: 20000 },
     produit: "silex", production: 150
   },
   {
     id: "comptoir", nom: "Comptoir d'échange", icone: "🤝",
     description: "Le troc avec les tribus voisines",
-    debloque: { ressource: "silex", quantite: 100000 },
-    cout: { ressource: "silex", base: 150000 },
+    debloque: { ressource: "silex", quantite: 50000 },
+    cout: { ressource: "silex", base: 100000 },
     produit: "silex", production: 800
   },
 
