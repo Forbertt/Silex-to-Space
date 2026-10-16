@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Silex To Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="carte">
+    <h1 class="titre">Silex <span>to</span> Space</h1>
+    <p class="sous-titre">Du premier éclat de pierre à la conquête des étoiles</p>
+
+    <div class="scores">
+  <div class="score" id="score-silex">
+    <span id="compteur-silex" class="compteur">0</span>
+    <small>silex taillés</small>
+    <small id="production-silex" class="production"></small>
+  </div>
+
+  <div class="score" id="score-bronze" hidden>
+    <span id="compteur-bronze" class="compteur compteur-bronze">0</span>
+    <small>bronze</small>
+    <small id="production-bronze" class="production"></small>
+  </div>
+
+  <div class="score" id="score-fer" hidden>
+    <span id="compteur-fer" class="compteur compteur-fer">0</span>
+    <small>fer</small>
+    <small id="production-fer" class="production"></small>
+  </div>
+
+  <div class="score" id="score-acier" hidden>
+    <span id="compteur-acier" class="compteur compteur-acier">0</span>
+    <small>acier</small>
+    <small id="production-acier" class="production"></small>
+  </div>
+
+  <div class="score" id="score-aluminium" hidden>
+    <span id="compteur-aluminium" class="compteur compteur-aluminium">0</span>
+    <small>aluminium</small>
+    <small id="production-aluminium" class="production"></small>
+  </div>
+
+  <div class="score" id="score-alliage" hidden>
+    <span id="compteur-alliage" class="compteur compteur-alliage">0</span>
+    <small>alliage avancés</small>
+    <small id="production-alliage" class="production"></small>
+  </div>
+
+  <div class="score" id="score-titane" hidden>
+    <span id="compteur-titane" class="compteur compteur-titane">0</span>
+    <small>titane</small>
+    <small id="production-titane" class="production"></small>
+  </div>
+
+  <div class="score" id="score-nanomateriaux" hidden>
+    <span id="compteur-nanomateriaux" class="compteur compteur-nanomateriaux">0</span>
+    <small>nanomateriaux</small>
+    <small id="production-nanomateriaux" class="production"></small>
+  </div>
+
+</div>
+
+  <nav class="onglets" id="onglets" hidden>
+    <button class="onglet actif" data-onglet="silex">Silex</button>
+    <button class="onglet" data-onglet="bronze" hidden>Bronze</button>
+    <button class="onglet" data-onglet="fer" hidden>Fer</button>
+    <button class="onglet" data-onglet="acier" hidden>Acier</button>
+    <button class="onglet" data-onglet="aluminium" hidden>Aluminium</button>
+    <button class="onglet" data-onglet="alliage" hidden>Alliage avancés</button>
+    <button class="onglet" data-onglet="titane" hidden>titane</button>
+    <button class="onglet" data-onglet="nanomateriaux" hidden>nanomateriaux</button>
+  </nav>
+
+<section class="zone" id="zone-silex">
+  <div class="autel">
+    <img id="clic-silex" class="cliquable" src="img/silex.png" alt="Tailler un silex" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le silex pour le tailler</p>
+</section>
+
+<section class="zone" id="zone-bronze" hidden>
+  <div class="autel autel-bronze">
+    <img id="clic-bronze" class="cliquable" src="img/bronze.png" alt="Forger du bronze" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le bronze pour le forger</p>
+</section>
+
+<section class="zone" id="zone-fer" hidden>
+  <div class="autel autel-fer">
+    <img id="clic-fer" class="cliquable" src="img/fer.png" alt="Forger du fer" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le fer pour le forger</p>
+</section>
+
+<section class="zone" id="zone-acier" hidden>
+  <div class="autel autel-acier">
+    <img id="clic-acier" class="cliquable" src="img/acier.png" alt="Forger du acier" draggable="false">
+  </div>
+  <p class="astuce">Clique sur l'acier pour le forger</p>
+</section>
+
+<section class="zone" id="zone-aluminium" hidden>
+  <div class="autel autel-aluminium">
+    <img id="clic-aluminium" class="cliquable" src="img/aluminium.png" alt="Forger du aluminium" draggable="false">
+  </div>
+  <p class="astuce">Clique sur l'aluminium pour le forger</p>
+</section>
+
+<section class="zone" id="zone-alliage" hidden>
+  <div class="autel autel-alliage">
+    <img id="clic-alliage" class="cliquable" src="img/alliage.png" alt="Forger du alliage" draggable="false">
+  </div>
+  <p class="astuce">Clique sur l'alliage avancés pour le forger</p>
+</section>
+
+<section class="zone" id="zone-titane" hidden>
+  <div class="autel autel-titane">
+    <img id="clic-titane" class="cliquable" src="img/titane.png" alt="Forger du titane" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le titane pour le forger</p>
+</section>
+
+<section class="zone" id="zone-nanomateriaux" hidden>
+  <div class="autel autel-nanomateriaux">
+    <img id="clic-nanomateriaux" class="cliquable" src="img/nanomateriaux.png" alt="Forger du nanomateriaux" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le nanomateriaux pour le forger</p>
+</section>
+
+    <section id="boutique" hidden>
+      <h2>Évolutions</h2>
+      <div id="liste-evolutions"></div>
+
+      <h2 id="titre-technologies" hidden>Technologies</h2>
+      <div id="liste-technologies"></div>
+    </section>
+    
+    <div class="pied">
+      <button id="ouvrir-codex" class="bouton-codex">📖 Codex</button>
+      <button id="ouvrir-succes" class="bouton-codex">🏆 Succès</button>
+      <button id="reset" class="reset">Réinitialiser la partie</button>
+      <button id="ouvrir-monuments" class="bouton-codex" hidden>🏛️ Monuments</button>
+    </div>
+  </main>
+<dialog id="decouverte">
+  <p class="etiquette">Nouvelle découverte</p>
+  <img id="decouverte-image" alt="" hidden>
+  <h2 id="decouverte-titre"></h2>
+  <p id="decouverte-texte"></p>
+  <p id="decouverte-bonus" class="bonus" hidden></p>
+  <p class="source">Source : Wikipédia (licence CC BY-SA)</p>
+  <a id="decouverte-lien" href="#" target="_blank" rel="noopener noreferrer">
+    Lire l'article sur Wikipédia
+  </a>
+  <button id="decouverte-fermer">Continuer à jouer</button>
+</dialog>
+<dialog id="codex">
+  <div class="codex-corps">
+    <div class="codex-entete">
+      <h2>Codex</h2>
+      <button id="codex-fermer" class="codex-fermer" aria-label="Fermer">✕</button>
+    </div>
+    <p id="codex-progression" class="codex-progression"></p>
+    <div class="codex-barre"><div id="codex-barre-remplie"></div></div>
+    <div id="codex-contenu"></div>
+  </div>
+</dialog>
+<dialog id="succes">
+  <div class="codex-corps">
+    <div class="codex-entete">
+      <h2>Succès</h2>
+      <button id="succes-fermer" class="codex-fermer" aria-label="Fermer">✕</button>
+    </div>
+    <p id="succes-progression" class="codex-progression"></p>
+    <div class="codex-barre"><div id="succes-barre-remplie"></div></div>
+    <p id="succes-bonus" class="succes-bonus"></p>
+    <div id="succes-contenu"></div>
+  </div>
+</dialog>
+<dialog id="monuments">
+  <div class="codex-entete">
+    <h2>🏛️ Monuments</h2>
+    <button id="monuments-fermer" class="codex-fermer">✕</button>
+  </div>
+  <div class="codex-corps">
+    <p id="monuments-progression"></p>
+    <div id="monuments-contenu" class="monuments-liste"></div>
+  </div>
+  
+</dialog>
+  <script src="donnees.js"></script>
+  <script src="game.js"></script>
+  <script src="codex.js"></script>
+  <script src="succes.js"></script>
+  <script src="monuments.js"></script>
+</body>
+</html>
