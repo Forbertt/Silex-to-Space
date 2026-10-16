@@ -45,33 +45,36 @@
     <small id="production-aluminium" class="production"></small>
   </div>
 
-  <div class="score" id="score-aluminium" hidden>
-    <span id="compteur-aluminium" class="compteur compteur-aluminium">0</span>
+  <div class="score" id="score-alliage" hidden>
+    <span id="compteur-alliage" class="compteur compteur-alliage">0</span>
     <small>alliage avancés</small>
-    <small id="production-aluminium" class="production"></small>
+    <small id="production-alliage" class="production"></small>
   </div>
 
-  <div class="score" id="score-aluminium" hidden>
-    <span id="compteur-aluminium" class="compteur compteur-aluminium">0</span>
+  <div class="score" id="score-titane" hidden>
+    <span id="compteur-titane" class="compteur compteur-titane">0</span>
     <small>titane</small>
-    <small id="production-aluminium" class="production"></small>
+    <small id="production-titane" class="production"></small>
   </div>
 
-  <div class="score" id="score-aluminium" hidden>
-    <span id="compteur-aluminium" class="compteur compteur-aluminium">0</span>
+  <div class="score" id="score-nanomateriaux" hidden>
+    <span id="compteur-nanomateriaux" class="compteur compteur-nanomateriaux">0</span>
     <small>nanomateriaux</small>
-    <small id="production-aluminium" class="production"></small>
+    <small id="production-nanomateriaux" class="production"></small>
   </div>
 
 </div>
 
-    <nav class="onglets" id="onglets" hidden>
-  <button class="onglet actif" data-onglet="silex">Silex</button>
-  <button class="onglet" data-onglet="bronze" hidden>Bronze</button>
-  <button class="onglet" data-onglet="fer" hidden>Fer</button>
-  <button class="onglet" data-onglet="acier" hidden>Acier</button>
-  <button class="onglet" data-onglet="aluminium" hidden>Aluminium</button>
-</nav>
+  <nav class="onglets" id="onglets" hidden>
+    <button class="onglet actif" data-onglet="silex">Silex</button>
+    <button class="onglet" data-onglet="bronze" hidden>Bronze</button>
+    <button class="onglet" data-onglet="fer" hidden>Fer</button>
+    <button class="onglet" data-onglet="acier" hidden>Acier</button>
+    <button class="onglet" data-onglet="aluminium" hidden>Aluminium</button>
+    <button class="onglet" data-onglet="alliage" hidden>Alliage avancés</button>
+    <button class="onglet" data-onglet="titane" hidden>titane</button>
+    <button class="onglet" data-onglet="nanomateriaux" hidden>nanomateriaux</button>
+  </nav>
 
 <section class="zone" id="zone-silex">
   <div class="autel">
@@ -98,14 +101,35 @@
   <div class="autel autel-acier">
     <img id="clic-acier" class="cliquable" src="img/acier.png" alt="Forger du acier" draggable="false">
   </div>
-  <p class="astuce">Clique sur le acier pour le forger</p>
+  <p class="astuce">Clique sur l'acier pour le forger</p>
 </section>
 
 <section class="zone" id="zone-aluminium" hidden>
   <div class="autel autel-aluminium">
     <img id="clic-aluminium" class="cliquable" src="img/aluminium.png" alt="Forger du aluminium" draggable="false">
   </div>
-  <p class="astuce">Clique sur le aluminium pour le forger</p>
+  <p class="astuce">Clique sur l'aluminium pour le forger</p>
+</section>
+
+<section class="zone" id="zone-alliage" hidden>
+  <div class="autel autel-alliage">
+    <img id="clic-alliage" class="cliquable" src="img/alliage.png" alt="Forger du alliage" draggable="false">
+  </div>
+  <p class="astuce">Clique sur l'alliage avancés pour le forger</p>
+</section>
+
+<section class="zone" id="zone-titane" hidden>
+  <div class="autel autel-titane">
+    <img id="clic-titane" class="cliquable" src="img/titane.png" alt="Forger du titane" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le titane pour le forger</p>
+</section>
+
+<section class="zone" id="zone-nanomateriaux" hidden>
+  <div class="autel autel-nanomateriaux">
+    <img id="clic-nanomateriaux" class="cliquable" src="img/nanomateriaux.png" alt="Forger du nanomateriaux" draggable="false">
+  </div>
+  <p class="astuce">Clique sur le nanomateriaux pour le forger</p>
 </section>
 
     <section id="boutique" hidden>
