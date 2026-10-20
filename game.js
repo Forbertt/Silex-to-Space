@@ -68,7 +68,6 @@ function calculer() {
   for (const r of ressources) {
     production[r.id] = 0;
     multiplicateur[r.id] = 1 + BONUS_PAR_SUCCES * etat.succes.length;   // bonus des succès
-    production[r.id] *= multiplicateur[r.id] * bonusComete.production;
   }
 
   for (const t of technologies) {
@@ -80,7 +79,7 @@ function calculer() {
     production[a.produit] += (etat.possedes[a.id] || 0) * a.production;
   }
   for (const r of ressources) {
-    production[r.id] *= multiplicateur[r.id];
+    production[r.id] *= multiplicateur[r.id] * bonusComete.production;
   }
 
   return { production, multiplicateur };
@@ -255,10 +254,10 @@ function rafraichir() {
   boutique.hidden = !(evolutionVisible || technologieVisible);
 }
 
-function montrerPlusUn(x, y) {
+function montrerPlusUn(x, y, valeur = 1) {
   const pop = document.createElement("span");
   pop.className = "pop";
-  pop.textContent = "+1";
+  pop.textContent = "+" + formatEntier.format(valeur);
   pop.style.left = x + "px";
   pop.style.top = y + "px";
   document.body.appendChild(pop);
@@ -335,7 +334,7 @@ for (const r of ressources) {
     etat.stock[r.id] += bonusComete.clic;
     etat.total[r.id] += bonusComete.clic;
     rafraichir();
-    montrerPlusUn(e.clientX, e.clientY);
+    montrerPlusUn(e.clientX, e.clientY, bonusComete.clic);
     verifierPaliers();
   });
 
