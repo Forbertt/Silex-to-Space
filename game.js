@@ -9,6 +9,7 @@
 const INTERVALLE_JEU = 100;          // ms entre deux mises à jour du jeu
 const INTERVALLE_SAUVEGARDE = 2000;  // ms entre deux sauvegardes
 const BONUS_PAR_SUCCES = 0.01;       // chaque succès débloqué : +1 % de production
+const bonusComete = { production: 1, clic: 1 }; // modifié par comete.js
 // Créés une seule fois : beaucoup plus rapide que toLocaleString() à chaque appel
 const formatEntier = new Intl.NumberFormat("fr-FR");
 const formatDecimal = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
@@ -67,6 +68,7 @@ function calculer() {
   for (const r of ressources) {
     production[r.id] = 0;
     multiplicateur[r.id] = 1 + BONUS_PAR_SUCCES * etat.succes.length;   // bonus des succès
+    production[r.id] *= multiplicateur[r.id] * bonusComete.production;
   }
 
   for (const t of technologies) {
@@ -330,8 +332,8 @@ for (const r of ressources) {
   // Un clic sur l'image d'une ressource en produit 1.
   // Pas de sauvegarde ici : elle se fait toutes les 2 secondes (voir plus bas).
   affichages[r.id].image.addEventListener("click", (e) => {
-    etat.stock[r.id]++;
-    etat.total[r.id]++;
+    etat.stock[r.id] += bonusComete.clic;
+    etat.total[r.id] += bonusComete.clic;
     rafraichir();
     montrerPlusUn(e.clientX, e.clientY);
     verifierPaliers();
